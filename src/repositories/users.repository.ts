@@ -36,6 +36,7 @@ export default class UsersRepository {
             .from('users')
             .where('id', '<>', userId);
     }
+    
 
     public static async follow(userId: number, friendId: number): Promise<number[]> {
         return queryBuilder.insert({

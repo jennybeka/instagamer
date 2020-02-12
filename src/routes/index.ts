@@ -5,20 +5,26 @@ import PostsController from '../controllers/posts.controller';
 import UsersController from '../controllers/users.controller';
 const router = Router();
 
-// Auth
-router.post('/instagamer/login', AuthController.login);
-router.post('/instagamer/register', AuthController.signUp);
+
 router.get('/', function (req, res) {
     res.send('login.html')
 });
+// Auth
+router.post('/instagamer/login', AuthController.login);
+router.post('/instagamer/register', AuthController.signUp);
 router.get('/instagamer/profile', AuthController.profile);
-// router.delete('/api/auth/logout', AuthController.logout);
+router.delete('/instagamer/logout', AuthController.logout);
+
 
 // posts
 router.get('/instagamer/posts', PostsController.getAll);
-router.get('/instagamer/posts/photo/:id', PostsController.getPhotoDetails); //photo selected
+router.get('/instagamer/posts/photo/:id', PostsController.getPhotoDetails);
+//router.get('/instagamer/posts/photo/tag/:idfoto', PostsController.getTagsDetails); //photo selected
 router.post('/instagamer/posts', PostsController.create);
-
+router.get('/instagamer/posts/:idphoto', PostsController.createComment);
+router.delete('/instagamer/posts/:idphoto', PostsController.deleteComment);
+router.get('/instagamer/posts/like/:idphoto', PostsController.like);
+router.delete('/instagamer/posts/dislike/:idLike', PostsController.disLike);
 
 
 // Users

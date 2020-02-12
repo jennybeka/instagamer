@@ -11,6 +11,37 @@ export default class PostRepository {
             .orderBy('photos.created_at', 'desc');
     }
 
+    public static async comentarPost(comment: string, photoId: string, userId: number ): Promise<any> {
+        return queryBuilder.insert({
+            comment_text: comment,
+            photo_id: photoId,
+            user_id: userId
+        }).into('comments');
+        
+    }
+
+    public static async deleteComment( photoId: string): Promise<any> {
+        return queryBuilder('comments')
+            .where('id', '=', photoId)
+            .del()
+
+    }
+
+    public static async like(photoId: string, userId: number ): Promise<any> {
+        return queryBuilder.insert({
+            photo_id: photoId,
+            user_id: userId
+        }).into('likes');
+        
+    }
+
+    public static async disLike(photoId: string): Promise<any> {
+        return queryBuilder('likes')
+            .where('photo_id', '=', photoId)
+            .del()
+
+    }
+
      /**SELECT DE PERFIL (ex: fotos de quem eu sigo, n° de curtidas e comentarios de fotos)*/
      public static async getFolloweesPosts(user: number): Promise<any> {
         const sql = `
@@ -42,8 +73,6 @@ export default class PostRepository {
         `;
          return queryBuilder.raw(sql, { user_id: user });
     }
-
-
 
     public static async postImage(urlImage: string, userId: number, legend: string): Promise<any> {
         const sql = `
@@ -77,6 +106,29 @@ export default class PostRepository {
 
          return queryBuilder.raw(sql, { user_id: photoId });      
         
+    }
+
+    public static async tagsPhotoSelected(tagId: number): Promise<any> {
+        const sql = `
+        SELECT photos.id as idDaFoto, tags.tag_name 
+        FROM photos 
+        INNER JOIN photo_tags ON photos.id = photo_tags.photo_id 
+        INNER JOIN tags ON photo_tags.tag_id = tags.id 
+        WHERE photos.id = :user_id;`;
+        
+        return queryBuilder.raw(sql, { user_id: tagId }); 
+        
+    }
+
+    public static async selectCommentsPhoto(idPhoto: number): Promise<any> {
+        const sql = `
+        SELECT photos.id, comments.comment_text , comments.created_at
+        FROM photos 
+        LEFT JOIN comments ON comments.photo_id = photos.id
+        where photos.id = :photo_id
+        ORDER BY photos.id;`
+
+        return queryBuilder.raw(sql, {photo_id: idPhoto });
     }
 
     public static async checkTag(tag_name: string): Promise<any> {

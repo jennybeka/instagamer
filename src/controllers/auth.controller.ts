@@ -1,7 +1,9 @@
 import { Request, Response } from 'express';
 import AuthRepository from '../repositories/auth.repository';
 import UsersRepository from '../repositories/users.repository';
-
+import { sign } from 'jsonwebtoken';
+import { queryBuilder } from '../core/db';
+import { userInfo } from 'os';
 
 class AuthController {
 
@@ -50,7 +52,8 @@ class AuthController {
     }
     
     public async logout(req: Request, res: Response): Promise<Response> {
-        return res.json();
+    //    AuthRepository.attemptLogin.destroy(userInfo)
+        return 
     }
 
 }

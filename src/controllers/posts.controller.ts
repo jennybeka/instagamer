@@ -32,14 +32,11 @@ class PostsController {
 
                 for (let tag of tags)  {
                     if(tag !== ""){
-
                         //função que cria tag caso não exista
                         await PostsRepository.checkTag(tag);
-    
                         //depois de garantir que a tag está no banco, criar o link entre a tagID e a tagPhoto
                         await PostsRepository.tagImage(tag, idPhoto);
                     }
-                    
                 }
             return res.json({ postId: postId[0], success: true, message: 'New post realized!'});
         } catch (error) {
@@ -51,13 +48,76 @@ class PostsController {
 
     public async getPhotoDetails(req: Request, res: Response): Promise<Response> {
             const { id } = req.params;
-            // const tagsPhoto = await PostRepository.tagImage(tagName, idPhoto);
+
+            const tags = await PostRepository.tagsPhotoSelected(Number(id));
             const photo = await PostRepository.photoSelected(Number(id));
- 
-            return res.json({  photo: photo[0] });
-             
-    
+            const comments = await PostRepository.selectCommentsPhoto(Number(id));
+
+            return res.json({ photo: photo[0],tags: tags[0], comments: comments[0]});
     }
+
+    
+    public async createComment(req: Request, res: Response): Promise<Response> {
+        try {
+            const  {comment_text}  = req.body;
+            const { idphoto } = req.params;
+            const { user_id } = res.locals.decodedToken;
+
+            const comment = await PostRepository.comentarPost(comment_text, idphoto ,user_id );
+            return res.json({ comment, success: true, message: 'New comment!'});
+
+        } catch (err) {
+            return res.status(401).json({
+                message: err.message
+            })
+        }
+
+    }
+
+    public async deleteComment(req: Request, res: Response): Promise<Response> {
+        try {
+            const { idphoto } = req.params;
+            const comment = await PostRepository.deleteComment(idphoto);
+            return res.json({ comment, success: true, message: 'Comment deleted!'});
+
+        } catch (err) {
+            return res.status(401).json({
+                message: err.message
+            })
+        }
+    }
+
+    public async like(req: Request, res: Response): Promise<Response> {
+        try {
+            const { idphoto } = req.params;
+            const { user_id } = res.locals.decodedToken;
+
+            const like = await PostRepository.like(idphoto, user_id);
+
+            return res.json({ like, success: true, message: 'YEah, Like!'});
+
+        } catch (err) {
+            return res.status(401).json({
+                message: err.message
+            });
+        }
+    }
+
+    public async disLike(req: Request, res: Response): Promise<Response> {
+        try {
+            const { idLike } = req.params;
+            const disLike = await PostRepository.disLike(idLike);
+
+            return res.json({ disLike, success: true, message: 'DisLike!'});
+
+        } catch (err) {
+            return res.status(401).json({
+                message: err.message
+            })
+        }
+    }
+
+
 
 }
 
