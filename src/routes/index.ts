@@ -7,7 +7,7 @@ const router = Router();
 
 
 router.get('/', function (req, res) {
-    res.send('login.html')
+    res.redirect('login.html')
 });
 // Auth
 router.post('/instagamer/login', AuthController.login);
@@ -20,11 +20,17 @@ router.delete('/instagamer/logout', AuthController.logout);
 router.get('/instagamer/posts', PostsController.getAll);
 router.get('/instagamer/posts/photo/:id', PostsController.getPhotoDetails);
 //router.get('/instagamer/posts/photo/tag/:idfoto', PostsController.getTagsDetails); //photo selected
-router.post('/instagamer/posts', PostsController.create);
-router.get('/instagamer/posts/:idphoto', PostsController.createComment);
-router.delete('/instagamer/posts/:idphoto', PostsController.deleteComment);
+//create and delete post
+router.post('/instagamer/posts/create', PostsController.create);
+router.delete('/instagamer/posts/:idPhoto', PostsController.deleteImage);
+//create and delete comment 
+router.get('/instagamer/posts/comment/:idphoto', PostsController.createComment);
+router.delete('/instagamer/posts/comment/:idcomment', PostsController.deleteComment);
+//Likes 
 router.get('/instagamer/posts/like/:idphoto', PostsController.like);
 router.delete('/instagamer/posts/dislike/:idLike', PostsController.disLike);
+
+
 
 
 // Users

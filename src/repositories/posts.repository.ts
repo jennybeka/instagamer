@@ -20,9 +20,10 @@ export default class PostRepository {
         
     }
 
-    public static async deleteComment( photoId: string): Promise<any> {
+    public static async deleteComment( photoId: string, userId: number): Promise<any> {
         return queryBuilder('comments')
             .where('id', '=', photoId)
+            .andWhere('user_id', '=', userId)
             .del()
 
     }
@@ -35,9 +36,10 @@ export default class PostRepository {
         
     }
 
-    public static async disLike(photoId: string): Promise<any> {
+    public static async disLike(photoId: string, userId: number): Promise<any> {
         return queryBuilder('likes')
             .where('photo_id', '=', photoId)
+            .andWhere('user_id', '=',userId)
             .del()
 
     }
@@ -81,6 +83,15 @@ export default class PostRepository {
         return queryBuilder.raw(sql, { image_url: urlImage, user_id: userId, text_photo: legend});        
         
     }
+
+    public static async deleteImage(photoId: number, userId: number): Promise<any> {
+        return queryBuilder('photos')
+            .where('id', '=', photoId)
+            .andWhere('user_id', '=',userId)
+            .del()
+
+    }
+
 
     public static async tagImage(tagName: string, idPhoto: number): Promise<number[]> {
         //tagId terá a query que busca o tagId a parte de um tagName

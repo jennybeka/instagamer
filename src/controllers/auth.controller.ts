@@ -9,6 +9,8 @@ class AuthController {
 
     public async login(req: Request, res: Response): Promise<Response> {
         try {
+            console.log(`No backend testeeeee`)
+
             const { email, password } = req.body;
             const token = await AuthRepository.attemptLogin(email, password);
 

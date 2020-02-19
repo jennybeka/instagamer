@@ -1,18 +1,21 @@
 import { Request, Response } from 'express';
 import PostsRepository from '../repositories/posts.repository';
 import PostRepository from '../repositories/posts.repository';
+import { cat } from 'shelljs';
 
 
 class PostsController {
 
     public async getAll(req: Request, res: Response): Promise<Response> {
         const { user_id } = res.locals.decodedToken;
+        console.log(`No backend `)
         const posts = await PostsRepository.getFolloweesPosts(user_id);
         return res.json({ posts: posts[0] }); 
     }
     
     public async create(req: Request, res: Response): Promise<Response> {
         try {
+            console.log(`No backend testeeeee`)
             const { image_url, text_photo, tags_image } = req.body;
             
             const { user_id } = res.locals.decodedToken;
@@ -46,6 +49,28 @@ class PostsController {
         }      
     }
 
+    public async deleteImage(req: Request, res: Response): Promise<Response> {
+        
+        try{
+            const { idPhoto } = req.params;
+            const { user_id } = res.locals.decodedToken;
+            const photo = await PostRepository.deleteImage(Number(idPhoto), user_id);  
+            
+            if(photo == 0){
+                const error = "This photo does not exist"
+                return res.json({error});
+            } else {
+                return res.json({ photo: photo,  message: 'Image Deleted'})
+            }
+        } catch(error) {
+            return res.status(400).json({
+                message: error.message,
+                text: "Bad delete!"
+            })
+        }
+        
+    }
+
     public async getPhotoDetails(req: Request, res: Response): Promise<Response> {
             const { id } = req.params;
 
@@ -76,8 +101,9 @@ class PostsController {
 
     public async deleteComment(req: Request, res: Response): Promise<Response> {
         try {
-            const { idphoto } = req.params;
-            const comment = await PostRepository.deleteComment(idphoto);
+            const { idcomment } = req.params;
+            const { user_id } = res.locals.decodedToken;
+            const comment = await PostRepository.deleteComment(idcomment, user_id);
             return res.json({ comment, success: true, message: 'Comment deleted!'});
 
         } catch (err) {
@@ -106,7 +132,8 @@ class PostsController {
     public async disLike(req: Request, res: Response): Promise<Response> {
         try {
             const { idLike } = req.params;
-            const disLike = await PostRepository.disLike(idLike);
+            const { user_id } = res.locals.decodedToken;
+            const disLike = await PostRepository.disLike(idLike, user_id);
 
             return res.json({ disLike, success: true, message: 'DisLike!'});
 
