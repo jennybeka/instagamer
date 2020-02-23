@@ -14,19 +14,31 @@ export default class UsersRepository {
         return queryBuilder.raw(sql, { user_id: userId });
     }
 
+    // /**SELECT DE PAGINAS do meu profile (count de quantas paginas serão necessarias de acordo com meus posts)*/
+    public static async getAllMyPostsPages(user: number): Promise<any> {
+        const sql = `
+        SELECT COUNT(*) AS total 
+        FROM photos
+        JOIN users ON photos.user_id = users.id
+        WHERE users.id = :user_id`
+        return queryBuilder.raw(sql, { user_id: user });
+        
+    }
+
     /**SELECT DE PERFIL (ex: meu perfil e minhas postagens)*/
-    public static async getPostsById(user: number): Promise<any> {
+    public static async getPostsById(user: number, page: number, rowsLimit: number): Promise<any> {
+        var initialRow = page * rowsLimit;
         const sql = `
         SELECT photos.id, photos.image_url, users.username, photos.created_at,photos.text_photo, likecount, commentcount  FROM photos
         LEFT JOIN (SELECT photo_id, COUNT(*) AS likecount FROM likes GROUP BY photo_id) AS liketable ON photos.id = liketable.photo_id
         LEFT JOIN (SELECT photo_id, COUNT(*) AS commentcount FROM comments GROUP BY photo_id) AS commenttable ON photos.id = commenttable.photo_id
         JOIN users ON photos.user_id = users.id
         WHERE users.id = :user_id
-        GROUP BY photos.id ORDER BY photos.created_at DESC;
-        
+        GROUP BY photos.id ORDER BY photos.created_at DESC
+        LIMIT :initialRow, :numRows;
         `;
 
-         return queryBuilder.raw(sql, { user_id: user });
+         return queryBuilder.raw(sql, { user_id: user, initialRow: initialRow , numRows: rowsLimit });
     }
 
 

@@ -1,16 +1,21 @@
 import { Request, Response } from 'express';
 import UsersRepository from '../repositories/users.repository';
 import AuthRepository from '../repositories/auth.repository';
+import PostRepository from '../repositories/posts.repository';
 
 class UsersController {
 
     public async profileFriend(req: Request, res: Response): Promise<Response> {
-        const { id } = req.params;
-    
-        const user = await UsersRepository.byId(Number(id));
-        const info = await UsersRepository.getPostsById(Number(id));
+        const { id, page } = req.params;
+        const rowsLimit = 5;
 
-        return res.json({ user: user[0], info: info[0] });
+        const totalPosts = await UsersRepository.getAllMyPostsPages(Number(id));
+        
+        const user = await UsersRepository.byId(Number(id));
+        const info = await UsersRepository.getPostsById( Number(id), Number(page), rowsLimit);
+        var pageQt = Math.ceil(totalPosts[0][0]['total'] / rowsLimit);
+        
+        return res.json({ user: user[0], info: info[0], pageQt: pageQt });
          
     }
 

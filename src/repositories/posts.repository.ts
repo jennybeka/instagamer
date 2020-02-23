@@ -43,11 +43,22 @@ export default class PostRepository {
             .del()
 
     }
-
-     /**SELECT DE PERFIL (ex: fotos de quem eu sigo, n° de curtidas e comentarios de fotos)*/
-     public static async getFolloweesPosts(user: number): Promise<any> {
+    
+    /**SELECT DE PAGINAS (count de quantas paginas serão necessarias de acordo com os posts de amigos)*/
+    public static async getAllFolloweesPages (user: number): Promise<any> {
         const sql = `
-        SELECT photos.id, photos.image_url, users.username, photos.created_at,photos.text_photo, likecount, commentcount 
+        SELECT  COUNT(*) AS total 
+        FROM photos
+        JOIN users ON photos.user_id = users.id
+        JOIN (SELECT followee_id FROM follows WHERE follower_id = :user_id) AS userFollowees ON user_id = userFollowees.followee_id;`
+        return queryBuilder.raw(sql, { user_id: user });
+        
+    }
+     /**SELECT DE PERFIL (ex: fotos de quem eu sigo, n° de curtidas e comentarios de fotos)*/
+     public static async getFolloweesPosts(user: number, page: number, rowsLimit: number): Promise<any> {
+        var initialRow = page * rowsLimit;
+        const sql = `
+        SELECT COUNT(*), photos.id, photos.image_url, users.username, photos.created_at,photos.text_photo, likecount, commentcount 
         FROM photos
         LEFT JOIN 
             (SELECT photo_id, COUNT(*) AS likecount FROM likes GROUP BY photo_id) AS liketable ON photos.id = liketable.photo_id
@@ -55,10 +66,11 @@ export default class PostRepository {
             (SELECT photo_id, COUNT(*) AS commentcount FROM comments GROUP BY photo_id) AS commenttable ON photos.id = commenttable.photo_id
         JOIN users ON photos.user_id = users.id
         JOIN (SELECT followee_id FROM follows WHERE follower_id = :user_id) AS userFollowees ON user_id = userFollowees.followee_id
-        GROUP BY photos.id ORDER BY photos.created_at DESC;
+        GROUP BY photos.id ORDER BY photos.created_at DESC
+        LIMIT :initialRow, :numRows;
         `;
 
-         return queryBuilder.raw(sql, { user_id: user });
+         return queryBuilder.raw(sql, { user_id: user, initialRow: initialRow , numRows: rowsLimit});
     }
 
     public static async getProfileFriend(user: number): Promise<any> {

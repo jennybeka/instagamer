@@ -4,6 +4,7 @@ import UsersRepository from '../repositories/users.repository';
 import { sign } from 'jsonwebtoken';
 import { queryBuilder } from '../core/db';
 import { userInfo } from 'os';
+import PostRepository from '../repositories/posts.repository';
 
 class AuthController {
 
@@ -42,13 +43,25 @@ class AuthController {
 
     public async profile(req: Request, res: Response): Promise<Response> {
         const decodedToken = res.locals.decodedToken;
+        const { page } = req.params;
+        console.log("Antes de PAGE")
+        console.log(page)
+        console.log("Depois de PAGE")
+
         const userId = decodedToken.user_id;
-        
+        console.log("Antes de userid")
+        console.log(userId)
+        console.log("Depois de userid")
+        const rowsLimit = 5;
+
+        const totalPosts = await UsersRepository.getAllMyPostsPages(Number(userId));
+
         const user = await UsersRepository.byId(userId);
-        const info = await UsersRepository.getPostsById(userId);
+        const info = await UsersRepository.getPostsById(Number(userId), Number(page), rowsLimit);
 
+        var pageQt = Math.ceil(totalPosts[0][0]['total'] / rowsLimit);
 
-        return res.json({ user: user[0], info: info[0] });
+        return res.json({ user: user[0], info: info[0],  pageQt: pageQt });
      
 
     }

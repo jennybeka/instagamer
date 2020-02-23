@@ -12,12 +12,12 @@ router.get('/', function (req, res) {
 // Auth
 router.post('/instagamer/login', AuthController.login);
 router.post('/instagamer/register', AuthController.signUp);
-router.get('/instagamer/profile', AuthController.profile);
+router.get('/instagamer/profile/:page?', AuthController.profile);
 router.delete('/instagamer/logout', AuthController.logout);
 
 
 // posts
-router.get('/instagamer/posts', PostsController.getAll);
+router.get('/instagamer/posts/:page?', PostsController.getAll);
 router.get('/instagamer/posts/photo/:id', PostsController.getPhotoDetails);
 //router.get('/instagamer/posts/photo/tag/:idfoto', PostsController.getTagsDetails); //photo selected
 //create and delete post
@@ -35,7 +35,7 @@ router.delete('/instagamer/posts/dislike/:idLike', PostsController.disLike);
 
 // Users
 // router.get('/instagamer/users', UsersController.profileFriend);
-router.get('/instagamer/users/:id', UsersController.profileFriend);
+router.get('/instagamer/users/:page?/:id?', UsersController.profileFriend);
 router.get('/instagamer/users/:id/follow', UsersController.newFollow);
 router.get('/instagamer/users/:id/unfollow', UsersController.deleteFollow);
 

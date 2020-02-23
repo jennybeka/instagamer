@@ -7,10 +7,19 @@ import { cat } from 'shelljs';
 class PostsController {
 
     public async getAll(req: Request, res: Response): Promise<Response> {
+
+        const rowsLimit = 5;
         const { user_id } = res.locals.decodedToken;
-        console.log(`No backend `)
-        const posts = await PostsRepository.getFolloweesPosts(user_id);
-        return res.json({ posts: posts[0] }); 
+        const { page } = req.params;
+
+        var totalPosts = await PostsRepository.getAllFolloweesPages(user_id);
+
+        var pageQt = Math.ceil(totalPosts[0][0]['total'] / rowsLimit);
+
+        const posts = await PostsRepository.getFolloweesPosts(user_id, Number(page), rowsLimit);
+
+        return res.json({ posts: posts[0], pageQt: pageQt});
+
     }
     
     public async create(req: Request, res: Response): Promise<Response> {
@@ -23,7 +32,7 @@ class PostsController {
             
             //Criar a nova foto
             const postId = await PostsRepository.postImage(image_url, user_id, text_photo);
-            
+
             //Validação do retorno da foto
             if (postId === null) {
                 const error = "error!!"
