@@ -36,10 +36,10 @@ export default class AuthRepository {
         const gravatar = createHash('md5').update(email).digest('hex');
 
         return queryBuilder.insert({
+            name,
             username,
             email,
             password,
-            name,
             gravatar_hash: gravatar
         }).into('users');
     }

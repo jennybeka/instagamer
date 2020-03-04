@@ -25,6 +25,7 @@ class AuthController {
 
     public async signUp(req: Request, res: Response): Promise<Response> {
         try {
+            console.log("PASSOU NO GEGISTER")
             const { email, username, name, password } = req.body;
 
             const [userId] = await AuthRepository.register(username, password, name, email);
@@ -32,6 +33,7 @@ class AuthController {
             if (userId > 0) {
                 const token = await AuthRepository.attemptLogin(email, password);
                 return res.json({ token });
+                
             }
             return res.status(400).json();
         } catch (err) {
@@ -67,8 +69,9 @@ class AuthController {
     }
     
     public async logout(req: Request, res: Response): Promise<Response> {
-    //    AuthRepository.attemptLogin.destroy(userInfo)
-        return 
+       // sessionStorage.removeItem('token');
+
+        return res.json("Logout");
     }
 
 }
