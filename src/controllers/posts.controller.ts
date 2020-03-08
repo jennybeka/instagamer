@@ -8,7 +8,7 @@ class PostsController {
 
     public async getAll(req: Request, res: Response): Promise<Response> {
 
-        const rowsLimit = 5;
+        const rowsLimit = 6;
         const { user_id } = res.locals.decodedToken;
         const { page } = req.params;
 
@@ -17,6 +17,23 @@ class PostsController {
         var pageQt = Math.ceil(totalPosts[0][0]['total'] / rowsLimit);
 
         const posts = await PostsRepository.getFolloweesPosts(user_id, Number(page), rowsLimit);
+
+        return res.json({ posts: posts[0], pageQt: pageQt});
+
+    }
+
+    public async getAllUsers(req: Request, res: Response): Promise<Response> {
+
+        const rowsLimit = 6;
+        const { user_id } = res.locals.decodedToken;
+        const { page } = req.params;
+        const { search } = req.body;
+
+        var totalPosts = await PostsRepository.getAllFolloweesPages(user_id);
+
+        var pageQt = Math.ceil(totalPosts[0][0]['total'] / rowsLimit);
+
+        const posts = await PostsRepository.getPublicPosts(user_id, Number(page), rowsLimit);
 
         return res.json({ posts: posts[0], pageQt: pageQt});
 

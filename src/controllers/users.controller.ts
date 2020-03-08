@@ -7,7 +7,7 @@ class UsersController {
 
     public async profileFriend(req: Request, res: Response): Promise<Response> {
         const { id, page } = req.params;
-        const rowsLimit = 5;
+        const rowsLimit = 6;
 
         const totalPosts = await UsersRepository.getAllMyPostsPages(Number(id));
         
@@ -15,7 +15,7 @@ class UsersController {
         const info = await UsersRepository.getPostsById( Number(id), Number(page), rowsLimit);
         var pageQt = Math.ceil(totalPosts[0][0]['total'] / rowsLimit);
         
-        return res.json({ user: user[0], info: info[0], pageQt: pageQt });
+        return res.json({ user: user[0], info: info[0], pageQt: pageQt, totalPosts: totalPosts[0][0]['total'] });
          
     }
 

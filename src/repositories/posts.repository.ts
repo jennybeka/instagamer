@@ -3,12 +3,14 @@ import { queryBuilder } from '../core/db/index';
 
 export default class PostRepository {
 
-    public static async getPublicPosts(search?: string, page?: number): Promise<any> {
+    public static async getPublicPosts(search?: string, page?: number, rowsLimit?: number): Promise<any> {
+        var initialRow = page * rowsLimit;
         return queryBuilder
             .select('name', 'username', 'gravatar_hash', 'image_url', 'photos.created_at', 'comment_text')
             .from('photos')
             .leftOuterJoin('users', 'users.id', 'photos.user_id', 'comment.user_id')
-            .orderBy('photos.created_at', 'desc');
+            .orderBy('photos.created_at', 'desc')
+            .limit(rowsLimit).offset(initialRow);
     }
 
     public static async comentarPost(comment: string, photoId: string, userId: number ): Promise<any> {

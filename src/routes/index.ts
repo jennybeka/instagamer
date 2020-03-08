@@ -18,6 +18,7 @@ router.delete('/instagamer/logout', AuthController.logout);
 
 // posts
 router.get('/instagamer/posts/:page?', PostsController.getAll);
+router.get('/instagamer/home/:page?', PostsController.getAll);
 router.get('/instagamer/posts/photo/:id', PostsController.getPhotoDetails);
 //router.get('/instagamer/posts/photo/tag/:idfoto', PostsController.getTagsDetails); //photo selected
 //create and delete post
