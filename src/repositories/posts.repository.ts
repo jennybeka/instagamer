@@ -13,7 +13,7 @@ export default class PostRepository {
             .limit(rowsLimit).offset(initialRow);
     }
 
-    public static async comentarPost(comment: string, photoId: string, userId: number ): Promise<any> {
+    public static async postComment(comment: string, photoId: number, userId: number ): Promise<any> {
         return queryBuilder.insert({
             comment_text: comment,
             photo_id: photoId,
@@ -147,9 +147,10 @@ export default class PostRepository {
 
     public static async selectCommentsPhoto(idPhoto: number): Promise<any> {
         const sql = `
-        SELECT photos.id, comments.comment_text , comments.created_at
+        SELECT comments.comment_text , comments.created_at, users.username
         FROM photos 
         LEFT JOIN comments ON comments.photo_id = photos.id
+        LEFT JOIN users ON comments.user_id = users.id
         where photos.id = :photo_id
         ORDER BY photos.id;`
 

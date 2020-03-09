@@ -25,7 +25,7 @@ router.get('/instagamer/posts/photo/:id', PostsController.getPhotoDetails);
 router.post('/instagamer/posts/create', PostsController.create);
 router.delete('/instagamer/posts/:idPhoto', PostsController.deleteImage);
 //create and delete comment 
-router.get('/instagamer/posts/comment/:idphoto', PostsController.createComment);
+router.post('/instagamer/posts/postcomment', PostsController.createComment);
 router.delete('/instagamer/posts/comment/:idcomment', PostsController.deleteComment);
 //Likes 
 router.get('/instagamer/posts/like/:idphoto', PostsController.like);

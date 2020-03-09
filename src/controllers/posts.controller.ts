@@ -103,6 +103,13 @@ class PostsController {
             const tags = await PostRepository.tagsPhotoSelected(Number(id));
             const photo = await PostRepository.photoSelected(Number(id));
             const comments = await PostRepository.selectCommentsPhoto(Number(id));
+            
+            // Se o campo created_at do primeiro registro estiver nulo, significa que o retorno está em branco.
+            // Então forçamos que o retorno seja vazio, ao invés de ser uma linha com registros nulos
+            if (comments[0][0]["created_at"] === null) {
+                console.log("Oxe entrou");
+                comments[0] = [];
+            }
 
             return res.json({ photo: photo[0],tags: tags[0], comments: comments[0]});
     }
@@ -110,11 +117,15 @@ class PostsController {
     
     public async createComment(req: Request, res: Response): Promise<Response> {
         try {
-            const  {comment_text}  = req.body;
-            const { idphoto } = req.params;
+            const  {comment_text, photoId}  = req.body;
+            console.log("TESTE IDPHOTO");
+            console.log(photoId);
+            console.log(comment_text);
+
+            // const { idphoto } = req.params;
             const { user_id } = res.locals.decodedToken;
 
-            const comment = await PostRepository.comentarPost(comment_text, idphoto ,user_id );
+            const comment = await PostRepository.postComment(comment_text, Number(photoId) , user_id );
             return res.json({ comment, success: true, message: 'New comment!'});
 
         } catch (err) {
