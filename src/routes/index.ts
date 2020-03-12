@@ -15,33 +15,27 @@ router.post('/instagamer/register', AuthController.signUp);
 router.get('/instagamer/profile/:page?', AuthController.profile);
 router.delete('/instagamer/logout', AuthController.logout);
 
-
 // posts
-router.get('/instagamer/posts/:page?', PostsController.getAll);
-router.get('/instagamer/home/:page?', PostsController.getAll);
+router.get('/instagamer/posts/all/:page?/:search?', PostsController.getAllUsers);
+router.get('/instagamer/home/:page?', PostsController.getAll);//friends 
 router.get('/instagamer/posts/photo/:id', PostsController.getPhotoDetails);
-//router.get('/instagamer/posts/photo/tag/:idfoto', PostsController.getTagsDetails); //photo selected
-//create and delete post
 router.post('/instagamer/posts/create', PostsController.create);
 router.delete('/instagamer/posts/:idPhoto', PostsController.deleteImage);
-//create and delete comment 
 router.post('/instagamer/posts/postcomment', PostsController.createComment);
 router.delete('/instagamer/posts/comment/:idcomment', PostsController.deleteComment);
-//Likes 
 router.get('/instagamer/posts/like/:idphoto', PostsController.like);
 router.delete('/instagamer/posts/dislike/:idLike', PostsController.disLike);
 
-
-
-
 // Users
-// router.get('/instagamer/users', UsersController.profileFriend);
+
 router.get('/instagamer/users/:page?/:id?', UsersController.profileFriend);
-router.get('/instagamer/users/:id/follow', UsersController.newFollow);
-router.get('/instagamer/users/:id/unfollow', UsersController.deleteFollow);
+router.get('/instagamer/follow/:id', UsersController.newFollow);
+router.get('/instagamer/unfollow/:id', UsersController.deleteFollow);
 
 export default router;
 
+// router.get('/instagamer/users', UsersController.profileFriend);
+//router.get('/instagamer/posts/photo/tag/:idfoto', PostsController.getTagsDetails); //photo selected
 /**The Router also provides route
  *  methods for all the other HTTP
  *  verbs, that are mostly used in

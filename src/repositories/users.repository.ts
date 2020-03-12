@@ -22,7 +22,7 @@ export default class UsersRepository {
         JOIN users ON photos.user_id = users.id
         WHERE users.id = :user_id`
         return queryBuilder.raw(sql, { user_id: user });
-        
+
     }
 
     /**SELECT DE PERFIL (ex: meu perfil e minhas postagens)*/
@@ -38,7 +38,7 @@ export default class UsersRepository {
         LIMIT :initialRow, :numRows;
         `;
 
-         return queryBuilder.raw(sql, { user_id: user, initialRow: initialRow , numRows: rowsLimit });
+        return queryBuilder.raw(sql, { user_id: user, initialRow: initialRow, numRows: rowsLimit });
     }
 
 
@@ -48,12 +48,15 @@ export default class UsersRepository {
             .from('users')
             .where('id', '<>', userId);
     }
-    
+
 
     public static async follow(userId: number, friendId: number): Promise<number[]> {
+        console.log("user ID!!!!!!!!!!!!!!!")
+        console.log(userId)
         return queryBuilder.insert({
             follower_id: userId,
-            followee_id: friendId
+            followee_id: friendId,
+
         }).into('follows');
     }
 
@@ -62,6 +65,6 @@ export default class UsersRepository {
             .where('follower_id', '=', userId)
             .andWhere('followee_id', '=', friendId)
             .del();
-           
+
     }
 }

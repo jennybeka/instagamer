@@ -20,7 +20,6 @@ export class App {
 
     public constructor() {
         this.express = express();
-
         this.setupExpress();
         this.routes();
 
@@ -37,5 +36,6 @@ export class App {
         this.express.use(bodyParser.json());
         this.express.use(bodyParser.urlencoded({ extended: true }));
     }
+    
 
 }

@@ -33,7 +33,7 @@ class AuthController {
             if (userId > 0) {
                 const token = await AuthRepository.attemptLogin(email, password);
                 return res.json({ token });
-                
+
             }
             return res.status(400).json();
         } catch (err) {
@@ -46,13 +46,10 @@ class AuthController {
     public async profile(req: Request, res: Response): Promise<Response> {
         const decodedToken = res.locals.decodedToken;
         const { page } = req.params;
-      
-        console.log(page)
 
         const userId = decodedToken.user_id;
-       
-        console.log(userId)
-     
+
+
         const rowsLimit = 6;
 
         const totalPosts = await UsersRepository.getAllMyPostsPages(Number(userId));
@@ -62,13 +59,13 @@ class AuthController {
 
         var pageQt = Math.ceil(totalPosts[0][0]['total'] / rowsLimit);
 
-        return res.json({ user: user[0], info: info[0],  pageQt: pageQt, totalPosts: totalPosts[0][0]['total'] });
-     
+        return res.json({ user: user[0], info: info[0], pageQt: pageQt, totalPosts: totalPosts[0][0]['total'] });
+
 
     }
-    
+
     public async logout(req: Request, res: Response): Promise<Response> {
-       // sessionStorage.removeItem('token');
+        // sessionStorage.removeItem('token');
 
         return res.json("Logout");
     }
