@@ -26,9 +26,10 @@ router.delete('/instagamer/posts/comment/:idcomment', PostsController.deleteComm
 router.get('/instagamer/posts/like/:idphoto', PostsController.like);
 router.delete('/instagamer/posts/dislike/:idLike', PostsController.disLike);
 
+
 // Users
 
-router.get('/instagamer/users/:page?/:id?', UsersController.profileFriend);
+router.get('/instagamer/home/friend/:page?/:idFriend?', UsersController.profileFriend);
 router.get('/instagamer/follow/:id', UsersController.newFollow);
 router.get('/instagamer/unfollow/:id', UsersController.deleteFollow);
 

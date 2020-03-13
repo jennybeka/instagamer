@@ -4,7 +4,7 @@ export default class UsersRepository {
 
     public static async byId(userId: number): Promise<any> {
         const sql = `
-        SELECT users.name, users.username, users.email, users.gravatar_hash, users.created_at, seguindoCount, seguidoresCount FROM users 
+        SELECT users.name, users.id, users.username, users.email, users.gravatar_hash, users.created_at, seguindoCount, seguidoresCount FROM users 
         LEFT JOIN 
             (SELECT follower_id, COUNT(*) AS seguindoCount FROM follows GROUP BY follower_id) AS seguindoTable ON users.id = seguindoTable.follower_id
         LEFT JOIN 
@@ -26,10 +26,10 @@ export default class UsersRepository {
     }
 
     /**SELECT DE PERFIL (ex: meu perfil e minhas postagens)*/
-    public static async getPostsById(user: number, page: number, rowsLimit: number): Promise<any> {
+    public static async getPostsById(user: number, page?: number, rowsLimit?: number): Promise<any> {
         var initialRow = page * rowsLimit;
         const sql = `
-        SELECT photos.id, photos.image_url, users.username, photos.created_at,photos.text_photo, likecount, commentcount  FROM photos
+        SELECT photos.id as idPhoto, photos.image_url, users.username, photos.created_at,photos.text_photo, likecount, commentcount  FROM photos
         LEFT JOIN (SELECT photo_id, COUNT(*) AS likecount FROM likes GROUP BY photo_id) AS liketable ON photos.id = liketable.photo_id
         LEFT JOIN (SELECT photo_id, COUNT(*) AS commentcount FROM comments GROUP BY photo_id) AS commenttable ON photos.id = commenttable.photo_id
         JOIN users ON photos.user_id = users.id

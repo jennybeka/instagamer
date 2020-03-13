@@ -6,26 +6,26 @@ import PostRepository from '../repositories/posts.repository';
 class UsersController {
 
     public async profileFriend(req: Request, res: Response): Promise<Response> {
-        const { id, page } = req.params;
+        const { idFriend, page } = req.params;
         const rowsLimit = 6;
 
-        const totalPosts = await UsersRepository.getAllMyPostsPages(Number(id));
+        const totalPosts = await UsersRepository.getAllMyPostsPages(Number(idFriend));
 
-        const user = await UsersRepository.byId(Number(id));
-        const info = await UsersRepository.getPostsById(Number(id), Number(page), rowsLimit);
+        const user = await UsersRepository.byId(Number(idFriend));
+        const info = await UsersRepository.getPostsById(Number(idFriend), Number(page), rowsLimit);
         var pageQt = Math.ceil(totalPosts[0][0]['total'] / rowsLimit);
+        console.log(  'idfriend aqui')
+        console.log(  idFriend)
 
         return res.json({ user: user[0], info: info[0], pageQt: pageQt, totalPosts: totalPosts[0][0]['total'] });
 
     }
 
     public async newFollow(req: Request, res: Response): Promise<Response> {
-        console.log("OI")
+
         try {
             const { id } = req.params;
             const { user_id } = res.locals.decodedToken;
-            console.log("user ID!!!!!!!!!!!!!!!")
-            console.log(user_id)
             const followId = await UsersRepository.follow(user_id, Number(id));
 
 
