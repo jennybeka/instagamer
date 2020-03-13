@@ -2,6 +2,7 @@ import { queryBuilder } from '../core/db/index';
 
 export default class UsersRepository {
 
+    /**SELECIONA os dados de um usuario pelo seu ID*/
     public static async byId(userId: number): Promise<any> {
         const sql = `
         SELECT users.name, users.id, users.username, users.email, users.gravatar_hash, users.created_at, seguindoCount, seguidoresCount FROM users 
@@ -14,7 +15,7 @@ export default class UsersRepository {
         return queryBuilder.raw(sql, { user_id: userId });
     }
 
-    // /**SELECT DE PAGINAS do meu profile (count de quantas paginas serão necessarias de acordo com meus posts)*/
+    // /**Count de quantas paginas serão necessarias de acordo com meus posts para serem exibidos na tela*/
     public static async getAllMyPostsPages(user: number): Promise<any> {
         const sql = `
         SELECT COUNT(*) AS total 
@@ -41,18 +42,17 @@ export default class UsersRepository {
         return queryBuilder.raw(sql, { user_id: user, initialRow: initialRow, numRows: rowsLimit });
     }
 
-
-    public static async getProfileFriend(userId: number, search?: string, page?: number): Promise<any> {
+     /**Checar se o usuario ja segue aquele profile*/
+    public static async checkFollowing(userId: number, friendId: number): Promise<any> {
         return queryBuilder
-            .select('id', 'name', 'username', 'gravatar_hash')
-            .from('users')
-            .where('id', '<>', userId);
+            .select('follower_id', 'followee_id')
+            .from('follows')
+            .where('follower_id', '=', userId)
+            .andWhere('followee_id', '=',friendId);
     }
 
-
+    /**Seguir uma nova pessoa*/
     public static async follow(userId: number, friendId: number): Promise<number[]> {
-        console.log("user ID!!!!!!!!!!!!!!!")
-        console.log(userId)
         return queryBuilder.insert({
             follower_id: userId,
             followee_id: friendId,
@@ -60,6 +60,7 @@ export default class UsersRepository {
         }).into('follows');
     }
 
+     /**Deixar de seguir uma pessoa*/
     public static async unfollow(userId: number, friendId: number): Promise<number> {
         return queryBuilder('follows')
             .where('follower_id', '=', userId)

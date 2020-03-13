@@ -11,7 +11,6 @@ class PostsController {
         const rowsLimit = 6;
         const decodedToken = res.locals.decodedToken;
         const userId = decodedToken.user_id;
-        console.log(userId)
         const { page } = req.params;
 
         const totalPosts = await PostsRepository.getAllFolloweesPages(Number(userId));
@@ -23,8 +22,7 @@ class PostsController {
     }
 
     public async getAllUsers(req: Request, res: Response): Promise<Response> {
-        console.log('Chamando todos os users')
-        const rowsLimit = 6;
+        const rowsLimit = 12;
         const { user_id } = res.locals.decodedToken;
         var { page , search} = req.params;
         
@@ -45,7 +43,6 @@ class PostsController {
 
     public async create(req: Request, res: Response): Promise<Response> {
         try {
-            console.log(`No backend testeeeee`)
             const { image_url, text_photo, tags_image } = req.body;
 
             const { user_id } = res.locals.decodedToken;
@@ -111,7 +108,6 @@ class PostsController {
         // Se o campo created_at do primeiro registro estiver nulo, significa que o retorno está em branco.
         // Então forçamos que o retorno seja vazio, ao invés de ser uma linha com registros nulos
         if (comments[0][0]["created_at"] === null) {
-            console.log("Oxe entrou");
             comments[0] = [];
         }
 
@@ -122,11 +118,6 @@ class PostsController {
     public async createComment(req: Request, res: Response): Promise<Response> {
         try {
             const { comment_text, photoId } = req.body;
-            console.log("TESTE IDPHOTO");
-            console.log(photoId);
-            console.log(comment_text);
-
-            // const { idphoto } = req.params;
             const { user_id } = res.locals.decodedToken;
 
             const comment = await PostRepository.postComment(comment_text, Number(photoId), user_id);

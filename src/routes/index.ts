@@ -30,17 +30,9 @@ router.delete('/instagamer/posts/dislike/:idLike', PostsController.disLike);
 // Users
 
 router.get('/instagamer/home/friend/:page?/:idFriend?', UsersController.profileFriend);
-router.get('/instagamer/follow/:id', UsersController.newFollow);
-router.get('/instagamer/unfollow/:id', UsersController.deleteFollow);
+router.get('/instagamer/follow/:friendId', UsersController.newFollow);
+router.get('/instagamer/unfollow/:friendId', UsersController.deleteFollow);
+router.get('/instagamer/friend/follower/:friendId', UsersController.checkingFollower);
 
 export default router;
 
-// router.get('/instagamer/users', UsersController.profileFriend);
-//router.get('/instagamer/posts/photo/tag/:idfoto', PostsController.getTagsDetails); //photo selected
-/**The Router also provides route
- *  methods for all the other HTTP
- *  verbs, that are mostly used in
- *  exactly the same way: post(), put(), delete(), options(), trace(), copy(), lock(),
- *  mkcol(), move(), purge(), propfind(), proppatch(), unlock(), report(), ​​​​​​ mkactivity(), checkout(), merge(),
- *  m-search(), notify(), subscribe(), unsubscribe(), patch(), search(),
- * and connect(). */

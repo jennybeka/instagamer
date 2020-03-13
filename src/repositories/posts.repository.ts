@@ -3,6 +3,7 @@ import { queryBuilder } from '../core/db/index';
 
 export default class PostRepository {
 
+    /**Coletar todos os usuarios cadastrados */
     public static async getPublicUsers(search?: string, page?: number, rowsLimit?: number): Promise<any> {
         var initialRow = page * rowsLimit;
 
@@ -18,6 +19,7 @@ export default class PostRepository {
         return queryBuilder.raw(sql, { search: search, initialRow: initialRow, numRows: rowsLimit });
     }
 
+    /**Inserir um novo comentario em um post */
     public static async postComment(comment: string, photoId: number, userId: number): Promise<any> {
         return queryBuilder.insert({
             comment_text: comment,
@@ -27,6 +29,7 @@ export default class PostRepository {
 
     }
 
+    /**Deletar com comentarioss */
     public static async deleteComment(photoId: string, userId: number): Promise<any> {
         return queryBuilder('comments')
             .where('id', '=', photoId)
@@ -35,6 +38,8 @@ export default class PostRepository {
 
     }
 
+
+    /**Inserir um like */
     public static async like(photoId: string, userId: number): Promise<any> {
         return queryBuilder.insert({
             photo_id: photoId,
@@ -42,7 +47,7 @@ export default class PostRepository {
         }).into('likes');
 
     }
-
+    /**Deletar um like */
     public static async disLike(photoId: string, userId: number): Promise<any> {
         return queryBuilder('likes')
             .where('photo_id', '=', photoId)
@@ -80,6 +85,7 @@ export default class PostRepository {
         return queryBuilder.raw(sql, { user_id: userId, initialRow: initialRow, numRows: rowsLimit });
     }
 
+    /**Selecionar o profil do meu amigo especifico*/
     public static async getProfileFriend(user: number): Promise<any> {
         const sql = `
         SELECT photos.id, photos.image_url, users.username, photos.created_at,photos.text_photo, likecount, commentcount  FROM photos
@@ -95,6 +101,7 @@ export default class PostRepository {
         return queryBuilder.raw(sql, { user_id: user });
     }
 
+    /**Inserir uma postagem nova */
     public static async postImage(urlImage: string, userId: number, legend: string): Promise<any> {
         const sql = `
         INSERT INTO photos(image_url, user_id, text_photo) VALUES (:image_url, :user_id, :text_photo);`
@@ -103,6 +110,7 @@ export default class PostRepository {
 
     }
 
+    /**Deletar um post */
     public static async deleteImage(photoId: number, userId: number): Promise<any> {
         return queryBuilder('photos')
             .where('id', '=', photoId)
@@ -111,7 +119,7 @@ export default class PostRepository {
 
     }
 
-
+    /**Inserir uma tag na imagem */
     public static async tagImage(tagName: string, idPhoto: number): Promise<number[]> {
         //tagId terá a query que busca o tagId a parte de um tagName
         var tagId = queryBuilder
@@ -125,6 +133,7 @@ export default class PostRepository {
         return queryBuilder.raw(sql2, { photo_id: idPhoto, tag_id: tagId });
     }
 
+    /**Selecionar uma foto especifica */
     public static async photoSelected(photoId: number): Promise<any> {
         const sql = ` SELECT photos.id, users.gravatar_hash, photos.image_url, users.username, photos.created_at,photos.text_photo, likecount, commentcount  FROM photos
         LEFT JOIN (SELECT photo_id, COUNT(*) AS likecount FROM likes GROUP BY photo_id) AS liketable ON photos.id = liketable.photo_id
@@ -138,6 +147,7 @@ export default class PostRepository {
 
     }
 
+    /**Selecionar as tags de uma foto especifica */
     public static async tagsPhotoSelected(tagId: number): Promise<any> {
         const sql = `
         SELECT photos.id as idDaFoto, tags.tag_name 
@@ -150,6 +160,7 @@ export default class PostRepository {
 
     }
 
+    /**Selecionar comentarios de uma foto especifica */
     public static async selectCommentsPhoto(idPhoto: number): Promise<any> {
         const sql = `
         SELECT comments.comment_text ,comments.id, comments.created_at, users.username
@@ -162,6 +173,7 @@ export default class PostRepository {
         return queryBuilder.raw(sql, { photo_id: idPhoto });
     }
 
+    /**Checar se ja existe a tag e se não existe inseri-la no BD*/
     public static async checkTag(tag_name: string): Promise<any> {
 
         return queryBuilder

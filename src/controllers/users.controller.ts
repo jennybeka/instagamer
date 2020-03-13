@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import UsersRepository from '../repositories/users.repository';
-import AuthRepository from '../repositories/auth.repository';
-import PostRepository from '../repositories/posts.repository';
+
 
 class UsersController {
 
@@ -14,9 +13,7 @@ class UsersController {
         const user = await UsersRepository.byId(Number(idFriend));
         const info = await UsersRepository.getPostsById(Number(idFriend), Number(page), rowsLimit);
         var pageQt = Math.ceil(totalPosts[0][0]['total'] / rowsLimit);
-        console.log(  'idfriend aqui')
-        console.log(  idFriend)
-
+    
         return res.json({ user: user[0], info: info[0], pageQt: pageQt, totalPosts: totalPosts[0][0]['total'] });
 
     }
@@ -24,11 +21,10 @@ class UsersController {
     public async newFollow(req: Request, res: Response): Promise<Response> {
 
         try {
-            const { id } = req.params;
+            const { friendId } = req.params;
             const { user_id } = res.locals.decodedToken;
-            const followId = await UsersRepository.follow(user_id, Number(id));
-
-
+            const followId = await UsersRepository.follow(user_id, Number(friendId));
+      
             if (followId === null) {
                 const error = "error!!"
                 return res.json({ error });
@@ -46,9 +42,9 @@ class UsersController {
 
     public async deleteFollow(req: Request, res: Response): Promise<Response> {
         try {
-            const { id } = req.params;
+            const { friendId } = req.params;
             const { user_id } = res.locals.decodedToken;
-            const unfollowId = await UsersRepository.unfollow(user_id, Number(id));
+            const unfollowId = await UsersRepository.unfollow(user_id, Number(friendId));
 
             if (unfollowId == 0) {
                 const error = "You were not his follower!!"
@@ -63,6 +59,29 @@ class UsersController {
                 text: "Bad unfollow!"
             });
         }
+
+    }
+
+    public async checkingFollower(req: Request, res: Response): Promise<Response> {
+
+        try {
+            
+            const { user_id } = res.locals.decodedToken;
+            const {friendId} = req.params;
+            const statusFollower = await UsersRepository.checkFollowing(user_id, Number(friendId))
+
+            if(statusFollower.length == 0){
+                return res.json({success:false, message: 'no following'})
+            } 
+            return res.json({success:true, message: 'following!'})
+    
+        } catch (error) {
+            return res.status(401).json({
+                message: error.message
+            })
+
+        }
+
 
     }
 
