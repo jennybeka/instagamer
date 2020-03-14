@@ -19,6 +19,7 @@ class AuthController {
     }
 
     public async signUp(req: Request, res: Response): Promise<Response> {
+        console.log("TESTANDO BACKEND HEROKU");
         try {
             const { email, username, name, password } = req.body;
 
