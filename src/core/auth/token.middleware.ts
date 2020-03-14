@@ -8,6 +8,7 @@ export default class TokenMiddleware {
         const allowedPaths = [
             '/',
             '/instagamer/login',
+            '/login.html',
             '/instagamer/register',
         ];
 
