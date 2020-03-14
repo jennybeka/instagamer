@@ -10,6 +10,7 @@ export default class TokenMiddleware {
             '/instagamer/login',
             '/login.html',
             '/instagamer/register',
+            '/instagamer/photo/like/349',
         ];
 
         if (allowedPaths.includes(req.path)) {
