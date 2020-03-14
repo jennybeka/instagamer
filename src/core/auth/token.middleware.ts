@@ -8,9 +8,7 @@ export default class TokenMiddleware {
         const allowedPaths = [
             '/',
             '/instagamer/login',
-            '/login.html',
             '/instagamer/register',
-            '/instagamer/photo/like/349',
         ];
 
         if (allowedPaths.includes(req.path)) {
