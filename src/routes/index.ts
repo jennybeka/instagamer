@@ -6,9 +6,9 @@ import UsersController from '../controllers/users.controller';
 const router = Router();
 
 
-router.get('/', function (req, res) {
-    res.redirect('login.html')
-});
+// router.get('/', function (req, res) {
+//     res.redirect('login.html')
+// });
 // Auth
 router.post('/instagamer/login', AuthController.login);
 router.post('/instagamer/register', AuthController.signUp);
