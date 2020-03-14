@@ -15,7 +15,7 @@ class PostsController {
 
         const totalPosts = await PostsRepository.getAllFolloweesPages(Number(userId));
         const pageQt = Math.ceil(totalPosts[0][0]['total'] / rowsLimit);
-        const posts = await PostsRepository.getFolloweesPosts(Number(userId),Number(page), rowsLimit);
+        const posts = await PostsRepository.getFolloweesPosts(Number(userId), Number(page), rowsLimit);
 
         return res.json({ posts: posts[0], pageQt: pageQt, totalPosts: totalPosts[0][0]['total'] });
 
@@ -24,17 +24,17 @@ class PostsController {
     public async getAllUsers(req: Request, res: Response): Promise<Response> {
         const rowsLimit = 12;
         const { user_id } = res.locals.decodedToken;
-        var { page , search} = req.params;
-        
-        if (search==undefined || search==null) {
-            search="";
+        var { page, search } = req.params;
+
+        if (search == undefined || search == null) {
+            search = "";
         }
 
         var totalPosts = await PostsRepository.getAllFolloweesPages(user_id);
 
         var pageQt = Math.ceil(totalPosts[0][0]['total'] / rowsLimit);
 
-        const posts = await PostsRepository.getPublicUsers(search , Number(page), rowsLimit);
+        const posts = await PostsRepository.getPublicUsers(search, Number(page), rowsLimit);
 
 
         return res.json({ posts: posts[0], pageQt: pageQt });
@@ -145,6 +145,26 @@ class PostsController {
         }
     }
 
+    public async likeCheck(req: Request, res: Response): Promise<Response> {
+        try {
+            const { photoId } = req.params;
+            const { user_id } = res.locals.decodedToken;
+
+            const statusLike = await PostRepository.checkLike(Number(photoId), Number(user_id));
+
+            if (statusLike.length == 0) {
+                return res.json({ success: false, message: 'no Like' })
+            }
+            return res.json({ success: true, message: 'likeed!' })
+
+        } catch (error) {
+            return res.status(401).json({
+                message: error.message
+            })
+
+        }
+    }
+
     public async like(req: Request, res: Response): Promise<Response> {
         try {
             const { idphoto } = req.params;
@@ -175,6 +195,8 @@ class PostsController {
             })
         }
     }
+
+
 
 
 

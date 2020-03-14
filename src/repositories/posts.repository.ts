@@ -56,6 +56,16 @@ export default class PostRepository {
 
     }
 
+    /**Inserir um like */
+    public static async checkLike(photoId: number, userId: number): Promise<any> {
+        return queryBuilder
+            .select('user_id', 'photo_id')
+            .from('likes')
+            .where('user_id', '=', userId)
+            .andWhere('photo_id', '=', photoId)
+    }
+
+
     /**SELECT DE PAGINAS (count de quantas paginas serão necessarias de acordo com os posts de amigos)*/
     public static async getAllFolloweesPages(user: number): Promise<any> {
         const sql = `

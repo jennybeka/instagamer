@@ -25,7 +25,7 @@ router.post('/instagamer/posts/postcomment', PostsController.createComment);
 router.delete('/instagamer/posts/comment/:idcomment', PostsController.deleteComment);
 router.get('/instagamer/posts/like/:idphoto', PostsController.like);
 router.delete('/instagamer/posts/dislike/:idLike', PostsController.disLike);
-
+router.get('/instagamer/photo/like/:photoId', PostsController.likeCheck);
 
 // Users
 
@@ -33,6 +33,8 @@ router.get('/instagamer/home/friend/:page?/:idFriend?', UsersController.profileF
 router.get('/instagamer/follow/:friendId', UsersController.newFollow);
 router.get('/instagamer/unfollow/:friendId', UsersController.deleteFollow);
 router.get('/instagamer/friend/follower/:friendId', UsersController.checkingFollower);
+
+
 
 export default router;
 
